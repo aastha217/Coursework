@@ -1,0 +1,144 @@
+// arithmetic.h
+// Header file containing function declarations
+
+#ifndef ARITHMETIC_H
+#define ARITHMETIC_H
+
+// Function declarations
+
+int add(int a, int b);
+int subtract(int a, int b);
+int multiply(int a, int b);
+float divide(int a, int b);
+
+#endif
+
+// arithmetic.cpp
+// Contains definitions of arithmetic functions
+
+#include "arithmetic.h"   // Include header file
+
+// Function to add two numbers
+int add(int a, int b)
+{
+    return a + b;
+}
+
+// Function to subtract second number from first
+int subtract(int a, int b)
+{
+    return a - b;
+}
+
+// Function to multiply two numbers
+int multiply(int a, int b)
+{
+    return a * b;
+}
+
+// Function to divide two numbers
+float divide(int a, int b)
+{
+    // Check division by zero
+    if (b == 0)
+    {
+        return 0;
+    }
+
+    return (float)a / b;
+}
+
+// main.cpp
+// Demonstrates use of arithmetic functions
+
+#include <iostream>
+#include "arithmetic.h"    // Include user-defined header file
+
+using namespace std;
+
+int main()
+{
+    // Initialize variables
+    int a = 20;
+    int b = 10;
+
+    // Call add() function
+    cout << "Addition = "
+         << add(a, b) << endl;
+
+    // Call subtract() function
+    cout << "Subtraction = "
+         << subtract(a, b) << endl;
+
+    // Call multiply() function
+    cout << "Multiplication = "
+         << multiply(a, b) << endl;
+
+    // Call divide() function
+    cout << "Division = "
+         << divide(a, b) << endl;
+
+    return 0;
+}
+
+// algebra.cpp
+// Contains mathematical functions
+
+// Function to calculate square of a number
+int square(int x)
+{
+    return x * x;
+}
+
+// Function to calculate cube of a number
+int cube(int x)
+{
+    return x * x * x;
+}
+
+// main.cpp
+// Program to test functions from library
+
+#include <iostream>
+
+using namespace std;
+
+// Function declarations
+int square(int x);
+int cube(int x);
+
+int main()
+{
+    // Display square of 5
+    cout << "Square = "
+         << square(5) << endl;
+
+    // Display cube of 5
+    cout << "Cube = "
+         << cube(5) << endl;
+
+    return 0;
+}
+
+# Compile algebra.cpp into object file
+g++ -c algebra.cpp
+
+# Create static library libmath.a
+ar rcs libmath.a algebra.o
+
+# Link static library with main program
+g++ main.cpp -L. -lmath -o demo_static
+
+# Verify static linking
+ldd demo_static
+# Compile position independent code
+g++ -fPIC -c algebra.cpp
+
+# Create shared library
+g++ -shared algebra.o -o libmath.so
+
+# Link shared library and embed runtime path
+g++ main.cpp -L. -lmath -Wl,-rpath=. -o demo_shared
+
+# Verify shared linking
+ldd demo_shared
