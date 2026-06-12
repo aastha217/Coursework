@@ -1,0 +1,164 @@
+// Program to print array elements and replace them with their squares
+// using std::for_each and lambda functions
+
+#include <iostream>
+#include <algorithm>   // Required for std::for_each
+
+using namespace std;
+
+int main()
+{
+    // Initialize a raw integer array with 10 elements
+    int arr[10] = {1,2,3,4,5,6,7,8,9,10};
+
+    cout << "Original Array:" << endl;
+
+    // Lambda function to print each element
+    for_each(arr, arr + 10,
+             [](int x)
+             {
+                 cout << x << " ";
+             });
+
+    cout << endl;
+
+    // Lambda function to replace each element with its square
+    for_each(arr, arr + 10,
+             [](int &x)
+             {
+                 x = x * x;
+             });
+
+    cout << "Squared Array:" << endl;
+
+    // Print updated array
+    for_each(arr, arr + 10,
+             [](int x)
+             {
+                 cout << x << " ";
+             });
+
+    cout << endl;
+
+    return 0;
+}
+
+
+// Program to modify vector elements using a function
+// that accepts an int reference
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Function accepts int by reference
+// Changes original value directly
+void multiplyByTen(int &x)
+{
+    x = x * 10;
+}
+
+int main()
+{
+    // Create vector containing first 10 positive integers
+    vector<int> numbers =
+    {
+        1,2,3,4,5,6,7,8,9,10
+    };
+
+    // Lambda function binds to vector elements
+    // Each element is passed by reference
+    for_each(numbers.begin(),
+             numbers.end(),
+             [](int &x)
+             {
+                 x = x * 10;
+             });
+
+    cout << "Modified Vector:" << endl;
+
+    // Print modified vector
+    for_each(numbers.begin(),
+             numbers.end(),
+             [](int x)
+             {
+                 cout << x << " ";
+             });
+
+    cout << endl;
+
+    return 0;
+}
+
+// Program demonstrating forwarding references
+
+#include <iostream>
+#include <utility>     // Required for std::forward
+
+using namespace std;
+
+// Template function with forwarding reference
+template <typename T>
+void showValue(T&& value)
+{
+    cout << "Value = "
+         << value << endl;
+}
+
+// Perfect forwarding function
+template <typename T>
+void forwardValue(T&& value)
+{
+    // Forward argument preserving its category
+    showValue(std::forward<T>(value));
+}
+
+int main()
+{
+    int x = 100;
+
+    cout << "Passing Lvalue:" << endl;
+
+    // x is an lvalue
+    forwardValue(x);
+
+    cout << "Passing Rvalue:" << endl;
+
+    // 200 is an rvalue
+    forwardValue(200);
+
+    return 0;
+}
+
+// Demonstration of lambda capture variable
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int multiplier = 5;
+
+    // Capture variable by value
+    auto lambda1 =
+    [multiplier](int x)
+    {
+        return x * multiplier;
+    };
+
+    cout << lambda1(10) << endl;
+
+    // Capture variable by reference
+    auto lambda2 =
+    [&multiplier](int x)
+    {
+        multiplier++;
+        return x * multiplier;
+    };
+
+    cout << lambda2(10) << endl;
+
+    return 0;
+}
