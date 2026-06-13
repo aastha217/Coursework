@@ -1,0 +1,417 @@
+// Program to demonstrate operator overloading
+// for Complex Numbers.
+//
+// Operators overloaded:
+// +  Addition
+// -  Subtraction
+// *  Multiplication
+// >> Input
+// << Output
+
+#include <iostream>
+
+using namespace std;
+
+class Complex
+{
+private:
+    double real;
+    double imag;
+
+public:
+
+    // Default constructor
+    // Initializes real and imaginary parts to 0
+    Complex()
+    {
+        real = 0;
+        imag = 0;
+    }
+
+    // Parameterized constructor
+    Complex(double r, double i)
+    {
+        real = r;
+        imag = i;
+    }
+
+    // Overload + operator
+    // (a+bi) + (c+di)
+    Complex operator+(const Complex& c)
+    {
+        return Complex(
+            real + c.real,
+            imag + c.imag
+        );
+    }
+
+    // Overload - operator
+    // (a+bi) - (c+di)
+    Complex operator-(const Complex& c)
+    {
+        return Complex(
+            real - c.real,
+            imag - c.imag
+        );
+    }
+
+    // Overload * operator
+    // (a+bi)(c+di)
+    Complex operator*(const Complex& c)
+    {
+        return Complex(
+            (real * c.real) -
+            (imag * c.imag),
+
+            (real * c.imag) +
+            (imag * c.real)
+        );
+    }
+
+    // Overload >> operator for input
+    friend istream& operator>>
+    (
+        istream& in,
+        Complex& c
+    )
+    {
+        cout << "Enter Real Part: ";
+        in >> c.real;
+
+        cout << "Enter Imaginary Part: ";
+        in >> c.imag;
+
+        return in;
+    }
+
+    // Overload << operator for output
+    friend ostream& operator<<
+    (
+        ostream& out,
+        const Complex& c
+    )
+    {
+        out << c.real
+            << " + "
+            << c.imag
+            << "i";
+
+        return out;
+    }
+};
+
+int main()
+{
+    Complex c1, c2;
+
+    // Input two complex numbers
+    cin >> c1;
+    cin >> c2;
+
+    // Addition
+    Complex sum = c1 + c2;
+
+    // Subtraction
+    Complex diff = c1 - c2;
+
+    // Multiplication
+    Complex prod = c1 * c2;
+
+    cout << "\nFirst Complex Number: "
+         << c1 << endl;
+
+    cout << "Second Complex Number: "
+         << c2 << endl;
+
+    cout << "Addition: "
+         << sum << endl;
+
+    cout << "Subtraction: "
+         << diff << endl;
+
+    cout << "Multiplication: "
+         << prod << endl;
+
+    return 0;
+}
+
+
+// Program to demonstrate operator overloading
+// for Rational Numbers (Fractions)
+//
+// Operators overloaded:
+// +  Addition
+// -  Subtraction
+// *  Multiplication
+// /  Division
+// == Equality
+// != Not Equal
+// <  Less Than
+// >  Greater Than
+// <= Less Than Equal
+// >= Greater Than Equal
+
+#include <iostream>
+
+using namespace std;
+
+class RationalNumber
+{
+private:
+    int numerator;
+    int denominator;
+
+    // Function to find GCD
+    int gcd(int a, int b)
+    {
+        while(b != 0)
+        {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+
+        return a;
+    }
+
+    // Simplify fraction
+    void simplify()
+    {
+        int g = gcd(
+            abs(numerator),
+            abs(denominator)
+        );
+
+        numerator /= g;
+        denominator /= g;
+
+        // Avoid negative denominator
+        if(denominator < 0)
+        {
+            numerator =
+                -numerator;
+
+            denominator =
+                -denominator;
+        }
+    }
+
+public:
+
+    // Constructor
+    RationalNumber(
+        int num = 0,
+        int den = 1
+    )
+    {
+        // Prevent denominator from becoming 0
+        if(den == 0)
+        {
+            cout << "Denominator cannot be zero."
+                 << endl;
+
+            den = 1;
+        }
+
+        numerator = num;
+        denominator = den;
+
+        simplify();
+    }
+
+    // Addition
+    RationalNumber operator+
+    (
+        const RationalNumber& r
+    )
+    {
+        return RationalNumber(
+            numerator * r.denominator +
+            r.numerator * denominator,
+
+            denominator *
+            r.denominator
+        );
+    }
+
+    // Subtraction
+    RationalNumber operator-
+    (
+        const RationalNumber& r
+    )
+    {
+        return RationalNumber(
+            numerator * r.denominator -
+            r.numerator * denominator,
+
+            denominator *
+            r.denominator
+        );
+    }
+
+    // Multiplication
+    RationalNumber operator*
+    (
+        const RationalNumber& r
+    )
+    {
+        return RationalNumber(
+            numerator * r.numerator,
+
+            denominator *
+            r.denominator
+        );
+    }
+
+    // Division
+    RationalNumber operator/
+    (
+        const RationalNumber& r
+    )
+    {
+        return RationalNumber(
+            numerator *
+            r.denominator,
+
+            denominator *
+            r.numerator
+        );
+    }
+
+    // Equality
+    bool operator==
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return numerator ==
+               r.numerator &&
+               denominator ==
+               r.denominator;
+    }
+
+    // Not Equal
+    bool operator!=
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return !(*this == r);
+    }
+
+    // Less Than
+    bool operator<
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return numerator *
+               r.denominator
+               <
+               r.numerator *
+               denominator;
+    }
+
+    // Greater Than
+    bool operator>
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return r < *this;
+    }
+
+    // Less Than Equal
+    bool operator<=
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return !(*this > r);
+    }
+
+    // Greater Than Equal
+    bool operator>=
+    (
+        const RationalNumber& r
+    ) const
+    {
+        return !(*this < r);
+    }
+
+    // Output operator
+    friend ostream&
+    operator<<
+    (
+        ostream& out,
+        const RationalNumber& r
+    )
+    {
+        out << r.numerator
+            << "/"
+            << r.denominator;
+
+        return out;
+    }
+};
+
+int main()
+{
+    RationalNumber r1(1,2);
+    RationalNumber r2(3,4);
+
+    cout << "First Fraction : "
+         << r1 << endl;
+
+    cout << "Second Fraction : "
+         << r2 << endl;
+
+    cout << "\nAddition : "
+         << r1 + r2 << endl;
+
+    cout << "Subtraction : "
+         << r1 - r2 << endl;
+
+    cout << "Multiplication : "
+         << r1 * r2 << endl;
+
+    cout << "Division : "
+         << r1 / r2 << endl;
+
+    cout << "\nEquality : "
+         << (r1 == r2)
+         << endl;
+
+    cout << "Not Equal : "
+         << (r1 != r2)
+         << endl;
+
+    cout << "Less Than : "
+         << (r1 < r2)
+         << endl;
+
+    cout << "Greater Than : "
+         << (r1 > r2)
+         << endl;
+
+    return 0;
+}
+// Conclusion
+
+// Question 1:
+// Implemented Complex class with operator overloading
+// for +, -, *, >> and << operators.
+
+// Question 2:
+// Implemented RationalNumber class with
+// fraction simplification, zero denominator checking,
+// arithmetic operator overloading and relational operator overloading.
+
+// Concepts Learned:
+// - Operator Overloading
+// - Friend Functions
+// - Constructors
+// - Default Constructors
+// - Relational Operators
+// - Arithmetic Operators
+// - Stream Insertion and Extraction Operators
