@@ -1,0 +1,249 @@
+// Program to demonstrate:
+// 1. Class and Objects
+// 2. Const member functions
+// 3. Copy Constructor
+// 4. Copy Assignment Operator
+// 5. Deep Copy
+// 6. Smart Pointer (unique_ptr)
+
+#include <iostream>
+#include <memory>
+#include <cstring>
+
+using namespace std;
+
+class Student
+{
+private:
+    char* name;      // Dynamic memory for name
+    int rollNo;
+    float marks;
+
+public:
+
+    // Parameterized Constructor
+    Student(const char* n, int r, float m)
+    {
+        name = new char[strlen(n) + 1];
+        strcpy(name, n);
+
+        rollNo = r;
+        marks = m;
+    }
+
+    // Deep Copy Constructor
+    Student(const Student& s)
+    {
+        name = new char[strlen(s.name) + 1];
+        strcpy(name, s.name);
+
+        rollNo = s.rollNo;
+        marks = s.marks;
+
+        cout << "Copy Constructor Called" << endl;
+    }
+
+    // Copy Assignment Operator
+    Student& operator=(const Student& s)
+    {
+        if(this != &s)
+        {
+            delete[] name;
+
+            name = new char[strlen(s.name) + 1];
+            strcpy(name, s.name);
+
+            rollNo = s.rollNo;
+            marks = s.marks;
+        }
+
+        cout << "Assignment Operator Called" << endl;
+
+        return *this;
+    }
+
+    // Const member function
+    void display() const
+    {
+        cout << "\nStudent Details" << endl;
+        cout << "Name  : " << name << endl;
+        cout << "Roll  : " << rollNo << endl;
+        cout << "Marks : " << marks << endl;
+    }
+
+    // Destructor
+    ~Student()
+    {
+        delete[] name;
+    }
+};
+
+int main()
+{
+    // Smart pointer manages memory automatically
+    unique_ptr<Student> s1 =
+        make_unique<Student>("Rahul",101,89.5);
+
+    cout << "Original Object:" << endl;
+    s1->display();
+
+    // Copy constructor
+    Student s2 = *s1;
+
+    cout << "\nCopied Object:" << endl;
+    s2.display();
+
+    // Assignment operator
+    Student s3("Temp",0,0);
+
+    s3 = s2;
+
+    cout << "\nAssigned Object:" << endl;
+    s3.display();
+
+    // Const object can call only const member functions
+    const Student s4("Amit",102,95);
+
+    cout << "\nConst Object:" << endl;
+    s4.display();
+
+    return 0;
+}
+
+// Program to demonstrate:
+// 1. Constructors
+// 2. Copy Constructor
+// 3. Copy Assignment Operator
+// 4. Const Member Function
+// 5. Smart Pointer
+// 6. Deposit and Withdraw Operations
+
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class BankAccount
+{
+private:
+    int accountNumber;
+    string accountHolder;
+    double balance;
+
+public:
+
+    // Constructor
+    BankAccount(int accNo,
+                string holder,
+                double bal)
+    {
+        accountNumber = accNo;
+        accountHolder = holder;
+        balance = bal;
+    }
+
+    // Copy Constructor
+    BankAccount(const BankAccount& b)
+    {
+        accountNumber = b.accountNumber;
+        accountHolder = b.accountHolder;
+        balance = b.balance;
+
+        cout << "Copy Constructor Called" << endl;
+    }
+
+    // Copy Assignment Operator
+    BankAccount& operator=(const BankAccount& b)
+    {
+        if(this != &b)
+        {
+            accountNumber = b.accountNumber;
+            accountHolder = b.accountHolder;
+            balance = b.balance;
+        }
+
+        cout << "Assignment Operator Called" << endl;
+
+        return *this;
+    }
+
+    // Deposit money
+    void deposit(double amount)
+    {
+        balance += amount;
+    }
+
+    // Withdraw money
+    void withdraw(double amount)
+    {
+        if(amount <= balance)
+        {
+            balance -= amount;
+        }
+        else
+        {
+            cout << "Insufficient Balance" << endl;
+        }
+    }
+
+    // Const member function
+    void display() const
+    {
+        cout << "\nAccount Details" << endl;
+        cout << "Account Number : "
+             << accountNumber << endl;
+
+        cout << "Account Holder : "
+             << accountHolder << endl;
+
+        cout << "Balance        : "
+             << balance << endl;
+    }
+};
+
+int main()
+{
+    // Smart pointer for dynamic object management
+    unique_ptr<BankAccount> acc1 =
+        make_unique<BankAccount>
+        (1001,"Rahul",5000);
+
+    cout << "Original Account:" << endl;
+    acc1->display();
+
+    // Deposit operation
+    acc1->deposit(2000);
+
+    // Withdraw operation
+    acc1->withdraw(1000);
+
+    cout << "\nAfter Transactions:" << endl;
+    acc1->display();
+
+    // Copy constructor
+    BankAccount acc2 = *acc1;
+
+    cout << "\nCopied Account:" << endl;
+    acc2.display();
+
+    // Assignment operator
+    BankAccount acc3(2001,"Temp",1000);
+
+    acc3 = acc2;
+
+    cout << "\nAssigned Account:" << endl;
+    acc3.display();
+
+    // Const object
+    const BankAccount acc4
+    (
+        3001,
+        "Amit",
+        10000
+    );
+
+    cout << "\nConst Account:" << endl;
+    acc4.display();
+
+    return 0;
+}
