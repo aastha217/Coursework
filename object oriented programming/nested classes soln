@@ -1,0 +1,350 @@
+// Program to demonstrate:
+// 1. Classes and Objects
+// 2. Nested Type Alias
+// 3. Nested Enum
+// 4. Static Data Members
+// 5. Template Classes
+// 6. Nested Template Classes
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Book
+{
+public:
+
+    // Nested type alias for Book ID
+    using BookID = string;
+
+    // Nested enum for category
+    enum Category
+    {
+        FICTION,
+        SCIENCE,
+        HISTORY,
+        TECHNOLOGY
+    };
+
+private:
+    string title;
+    BookID isbn;
+    Category category;
+
+    // Static member to count books
+    static int totalBooks;
+
+public:
+
+    // Constructor
+    Book(string t, BookID id, Category c)
+    {
+        title = t;
+        isbn = id;
+        category = c;
+
+        totalBooks++;
+    }
+
+    // Display book details
+    void displayBook() const
+    {
+        cout << "\nBook Title : " << title << endl;
+        cout << "ISBN       : " << isbn << endl;
+
+        cout << "Category   : ";
+
+        switch(category)
+        {
+            case FICTION:
+                cout << "FICTION";
+                break;
+
+            case SCIENCE:
+                cout << "SCIENCE";
+                break;
+
+            case HISTORY:
+                cout << "HISTORY";
+                break;
+
+            case TECHNOLOGY:
+                cout << "TECHNOLOGY";
+                break;
+        }
+
+        cout << endl;
+    }
+
+    // Static function
+    static int getTotalBooks()
+    {
+        return totalBooks;
+    }
+};
+
+// Static member initialization
+int Book::totalBooks = 0;
+
+
+// Outer Template Class
+template <typename T>
+class Library
+{
+private:
+    string sectionName;
+    T totalShelves;
+
+public:
+
+    Library(string name, T shelves)
+    {
+        sectionName = name;
+        totalShelves = shelves;
+    }
+
+    // Display library section information
+    void displaySection() const
+    {
+        cout << "\nLibrary Section Details" << endl;
+        cout << "Section Name : "
+             << sectionName << endl;
+
+        cout << "Total Shelves : "
+             << totalShelves << endl;
+    }
+
+    // Nested Template Class
+    template <typename U>
+    class Issue
+    {
+    public:
+
+        // Enum for issue status
+        enum Status
+        {
+            ISSUED,
+            RESERVED
+        };
+
+    private:
+        U memberName;
+        Status status;
+
+    public:
+
+        Issue(U member, Status s)
+        {
+            memberName = member;
+            status = s;
+        }
+
+        // Display issue information
+        void issueBook(string bookTitle)
+        {
+            cout << "\nBook : "
+                 << bookTitle << endl;
+
+            cout << "Member : "
+                 << memberName << endl;
+
+            cout << "Status : ";
+
+            if(status == ISSUED)
+                cout << "ISSUED";
+            else
+                cout << "RESERVED";
+
+            cout << endl;
+        }
+    };
+};
+
+int main()
+{
+    // Create four books
+
+    Book b1
+    (
+        "C++ Programming",
+        "ISBN101",
+        Book::TECHNOLOGY
+    );
+
+    Book b2
+    (
+        "Physics Fundamentals",
+        "ISBN102",
+        Book::SCIENCE
+    );
+
+    Book b3
+    (
+        "World History",
+        "ISBN103",
+        Book::HISTORY
+    );
+
+    Book b4
+    (
+        "Harry Potter",
+        "ISBN104",
+        Book::FICTION
+    );
+
+    // Display books
+
+    b1.displayBook();
+    b2.displayBook();
+    b3.displayBook();
+    b4.displayBook();
+
+    // Create library section
+
+    Library<int> section
+    (
+        "Technology Section",
+        20
+    );
+
+    section.displaySection();
+
+    // Create issue objects
+
+    Library<int>::Issue<string>
+    issue1("Rahul",
+           Library<int>::Issue<string>::ISSUED);
+
+    Library<int>::Issue<string>
+    issue2("Amit",
+           Library<int>::Issue<string>::RESERVED);
+
+    issue1.issueBook("C++ Programming");
+    issue2.issueBook("World History");
+
+    // Display total books
+
+    cout << "\nTotal Books = "
+         << Book::getTotalBooks()
+         << endl;
+
+    return 0;
+}
+// Program to demonstrate:
+// 1. Conversion Constructor
+// 2. Type Conversion Operator
+// 3. Explicit Keyword
+// 4. Conversion between CGPA and Percentage
+
+#include <iostream>
+
+using namespace std;
+
+class Percentage;
+
+class CGPA
+{
+private:
+    float cgpa;
+
+public:
+
+    // Constructor
+    CGPA(float c = 0)
+    {
+        cgpa = c;
+    }
+
+    // Display CGPA
+    void display() const
+    {
+        cout << "CGPA = "
+             << cgpa << endl;
+    }
+
+    // Getter function
+    float getCGPA() const
+    {
+        return cgpa;
+    }
+
+    // Conversion operator
+    operator Percentage();
+};
+
+class Percentage
+{
+private:
+    float percentage;
+
+public:
+
+    // Conversion constructor
+    Percentage(CGPA c)
+    {
+        percentage =
+        c.getCGPA() * 9.5;
+    }
+
+    // Constructor
+    Percentage(float p = 0)
+    {
+        percentage = p;
+    }
+
+    // Display Percentage
+    void display() const
+    {
+        cout << "Percentage = "
+             << percentage
+             << "%"
+             << endl;
+    }
+
+    // Getter function
+    float getPercentage() const
+    {
+        return percentage;
+    }
+
+    // Conversion operator
+    operator CGPA()
+    {
+        return CGPA(
+            percentage / 9.5
+        );
+    }
+};
+
+// Conversion Operator Definition
+CGPA::operator Percentage()
+{
+    return Percentage(
+        cgpa * 9.5
+    );
+}
+
+int main()
+{
+    CGPA c1(8.5);
+
+    cout << "Original CGPA" << endl;
+    c1.display();
+
+    // CGPA to Percentage
+    Percentage p1 = c1;
+
+    cout << "\nConverted Percentage" << endl;
+    p1.display();
+
+    // Percentage to CGPA
+    Percentage p2(85.5);
+
+    CGPA c2 = p2;
+
+    cout << "\nConverted CGPA" << endl;
+    c2.display();
+
+    return 0;
+}
