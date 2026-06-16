@@ -1,0 +1,333 @@
+// Program to demonstrate Inheritance
+// Base Class      : Package
+// Derived Classes : TwoDayPackage, OvernightPackage
+
+#include <iostream>
+
+using namespace std;
+
+// Base Class
+class Package
+{
+protected:
+
+    // Sender details
+    string senderName;
+    string senderAddress;
+    string senderCity;
+    string senderState;
+    string senderZIP;
+
+    // Receiver details
+    string receiverName;
+    string receiverAddress;
+    string receiverCity;
+    string receiverState;
+    string receiverZIP;
+
+    // Package details
+    double weight;
+    double costPerOunce;
+
+public:
+
+    // Constructor
+    Package(
+        string sName,
+        string sAddress,
+        string sCity,
+        string sState,
+        string sZIP,
+
+        string rName,
+        string rAddress,
+        string rCity,
+        string rState,
+        string rZIP,
+
+        double w,
+        double cost
+    )
+    {
+        senderName = sName;
+        senderAddress = sAddress;
+        senderCity = sCity;
+        senderState = sState;
+        senderZIP = sZIP;
+
+        receiverName = rName;
+        receiverAddress = rAddress;
+        receiverCity = rCity;
+        receiverState = rState;
+        receiverZIP = rZIP;
+
+        // Ensure positive values
+        weight = (w > 0) ? w : 0;
+        costPerOunce = (cost > 0) ? cost : 0;
+    }
+
+    // Virtual function for shipping cost
+    virtual double calculateCost()
+    {
+        return weight * costPerOunce;
+    }
+
+    // Display package information
+    void display()
+    {
+        cout << "\nSender    : "
+             << senderName << endl;
+
+        cout << "Receiver  : "
+             << receiverName << endl;
+
+        cout << "Weight    : "
+             << weight << " ounces" << endl;
+    }
+};
+
+
+// Derived Class : Two Day Package
+class TwoDayPackage : public Package
+{
+private:
+    double flatFee;
+
+public:
+
+    // Constructor
+    TwoDayPackage(
+        string sName,
+        string sAddress,
+        string sCity,
+        string sState,
+        string sZIP,
+
+        string rName,
+        string rAddress,
+        string rCity,
+        string rState,
+        string rZIP,
+
+        double w,
+        double cost,
+        double fee
+    )
+
+    : Package(
+        sName,sAddress,sCity,sState,sZIP,
+        rName,rAddress,rCity,rState,rZIP,
+        w,cost)
+    {
+        flatFee = fee;
+    }
+
+    // Override calculateCost()
+    double calculateCost() override
+    {
+        return Package::calculateCost()
+               + flatFee;
+    }
+};
+
+
+// Derived Class : Overnight Package
+class OvernightPackage : public Package
+{
+private:
+    double extraFeePerOunce;
+
+public:
+
+    // Constructor
+    OvernightPackage(
+        string sName,
+        string sAddress,
+        string sCity,
+        string sState,
+        string sZIP,
+
+        string rName,
+        string rAddress,
+        string rCity,
+        string rState,
+        string rZIP,
+
+        double w,
+        double cost,
+        double extraFee
+    )
+
+    : Package(
+        sName,sAddress,sCity,sState,sZIP,
+        rName,rAddress,rCity,rState,rZIP,
+        w,cost)
+    {
+        extraFeePerOunce = extraFee;
+    }
+
+    // Override calculateCost()
+    double calculateCost() override
+    {
+        return weight *
+               (costPerOunce +
+                extraFeePerOunce);
+    }
+};
+
+int main()
+{
+    // Normal Package
+    Package p(
+        "Rahul","ABC Street",
+        "Chennai","TN","600001",
+
+        "Amit","XYZ Street",
+        "Bangalore","KA","560001",
+
+        10,5
+    );
+
+    // Two Day Package
+    TwoDayPackage td(
+        "Rahul","ABC Street",
+        "Chennai","TN","600001",
+
+        "Amit","XYZ Street",
+        "Bangalore","KA","560001",
+
+        10,5,20
+    );
+
+    // Overnight Package
+    OvernightPackage op(
+        "Rahul","ABC Street",
+        "Chennai","TN","600001",
+
+        "Amit","XYZ Street",
+        "Bangalore","KA","560001",
+
+        10,5,2
+    );
+
+    cout << "Package Cost = "
+         << p.calculateCost()
+         << endl;
+
+    cout << "Two Day Package Cost = "
+         << td.calculateCost()
+         << endl;
+
+    cout << "Overnight Package Cost = "
+         << op.calculateCost()
+         << endl;
+
+    return 0;
+}
+
+// Program to demonstrate:
+// 1. Smart Pointers
+// 2. Graph Data Structure
+// 3. Friend Class
+// 4. weak_ptr to avoid cyclic references
+
+#include <iostream>
+#include <vector>
+#include <memory>
+
+using namespace std;
+
+class Graph;
+
+// Node Class
+class Node
+{
+private:
+
+    string label;
+
+    // weak_ptr prevents cyclic references
+    vector<weak_ptr<Node>> adjacent;
+
+public:
+
+    Node(string lbl)
+    {
+        label = lbl;
+    }
+
+    friend class Graph;
+};
+
+// Graph Class
+class Graph
+{
+private:
+
+    vector<shared_ptr<Node>> nodes;
+
+public:
+
+    // Add node to graph
+    void addNode(string label)
+    {
+        nodes.push_back(
+            make_shared<Node>(label)
+        );
+    }
+
+    // Add edge between nodes
+    void addEdge(int from, int to)
+    {
+        nodes[from]->adjacent.push_back(
+            nodes[to]
+        );
+    }
+
+    // Display graph
+    void showGraph()
+    {
+        cout << "\nGraph Structure\n";
+
+        for(auto node : nodes)
+        {
+            cout << node->label
+                 << " -> ";
+
+            for(auto adj :
+                node->adjacent)
+            {
+                if(auto ptr =
+                   adj.lock())
+                {
+                    cout
+                    << ptr->label
+                    << " ";
+                }
+            }
+
+            cout << endl;
+        }
+    }
+};
+
+int main()
+{
+    Graph g;
+
+    // Create nodes
+    g.addNode("A");
+    g.addNode("B");
+    g.addNode("C");
+    g.addNode("D");
+
+    // Create edges
+    g.addEdge(0,1);
+    g.addEdge(1,2);
+    g.addEdge(2,3);
+    g.addEdge(3,0);
+
+    g.showGraph();
+
+    return 0;
+}
