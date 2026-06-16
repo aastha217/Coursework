@@ -1,0 +1,376 @@
+// Program to demonstrate:
+// 1. Abstract Classes
+// 2. Pure Virtual Functions
+// 3. Runtime Polymorphism
+// 4. Base Class Pointers
+// 5. Vector of Package Pointers
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Abstract Base Class
+class Package
+{
+protected:
+
+    string sender;
+    string receiver;
+
+    double weight;
+    double costPerOunce;
+
+public:
+
+    // Constructor
+    Package(
+        string s,
+        string r,
+        double w,
+        double cost
+    )
+    {
+        sender = s;
+        receiver = r;
+
+        weight = (w > 0) ? w : 0;
+        costPerOunce = (cost > 0) ? cost : 0;
+    }
+
+    // Pure Virtual Function
+    // Makes Package an abstract class
+    virtual double calculateCost() = 0;
+
+    // Virtual display function
+    virtual void display()
+    {
+        cout << "\nSender   : "
+             << sender << endl;
+
+        cout << "Receiver : "
+             << receiver << endl;
+    }
+
+    virtual ~Package() {}
+};
+
+
+// Derived Class
+class TwoDayPackage : public Package
+{
+private:
+    double flatFee;
+
+public:
+
+    TwoDayPackage(
+        string s,
+        string r,
+        double w,
+        double cost,
+        double fee
+    )
+
+    : Package(s,r,w,cost)
+    {
+        flatFee = fee;
+    }
+
+    // Override calculateCost()
+    double calculateCost() override
+    {
+        return (weight * costPerOunce)
+               + flatFee;
+    }
+
+    void display() override
+    {
+        Package::display();
+
+        cout << "Type     : "
+             << "Two Day Package"
+             << endl;
+    }
+};
+
+
+// Derived Class
+class OvernightPackage : public Package
+{
+private:
+    double extraFeePerOunce;
+
+public:
+
+    OvernightPackage(
+        string s,
+        string r,
+        double w,
+        double cost,
+        double extraFee
+    )
+
+    : Package(s,r,w,cost)
+    {
+        extraFeePerOunce =
+        extraFee;
+    }
+
+    // Override calculateCost()
+    double calculateCost() override
+    {
+        return weight *
+               (costPerOunce
+                +
+                extraFeePerOunce);
+    }
+
+    void display() override
+    {
+        Package::display();
+
+        cout << "Type     : "
+             << "Overnight Package"
+             << endl;
+    }
+};
+
+int main()
+{
+    // Vector of base class pointers
+    vector<Package*> packages;
+
+    packages.push_back(
+        new TwoDayPackage(
+            "Rahul",
+            "Amit",
+            10,
+            5,
+            20
+        )
+    );
+
+    packages.push_back(
+        new OvernightPackage(
+            "Kiran",
+            "Arun",
+            10,
+            5,
+            2
+        )
+    );
+
+    // Polymorphic call
+    for(Package* p : packages)
+    {
+        p->display();
+
+        cout << "Cost     : "
+             << p->calculateCost()
+             << endl;
+    }
+
+    // Free memory
+    for(Package* p : packages)
+    {
+        delete p;
+    }
+
+    return 0;
+}
+
+
+
+// Program to demonstrate:
+// 1. Abstract Class
+// 2. Runtime Polymorphism
+// 3. Pure Virtual Functions
+// 4. Vector of Base Class Pointers
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Abstract Base Class
+class ShoppingItem
+{
+public:
+
+    // Pure Virtual Function
+    virtual double calculateDiscount() = 0;
+
+    // Virtual display function
+    virtual void display() = 0;
+
+    virtual ~ShoppingItem() {}
+};
+
+
+// Electronics Class
+class Electronics : public ShoppingItem
+{
+private:
+
+    string brand;
+    int warranty;
+
+public:
+
+    Electronics(
+        string b,
+        int w
+    )
+    {
+        brand = b;
+        warranty = w;
+    }
+
+    // 15% discount
+    double calculateDiscount() override
+    {
+        return 15.0;
+    }
+
+    void display() override
+    {
+        cout << "\nElectronics Item"
+             << endl;
+
+        cout << "Brand    : "
+             << brand << endl;
+
+        cout << "Warranty : "
+             << warranty
+             << " Years"
+             << endl;
+
+        cout << "Discount : "
+             << calculateDiscount()
+             << "%"
+             << endl;
+    }
+};
+
+
+// Clothing Class
+class Clothing : public ShoppingItem
+{
+private:
+
+    string size;
+    string fabric;
+
+public:
+
+    Clothing(
+        string s,
+        string f
+    )
+    {
+        size = s;
+        fabric = f;
+    }
+
+    // 20% discount
+    double calculateDiscount() override
+    {
+        return 20.0;
+    }
+
+    void display() override
+    {
+        cout << "\nClothing Item"
+             << endl;
+
+        cout << "Size     : "
+             << size << endl;
+
+        cout << "Fabric   : "
+             << fabric << endl;
+
+        cout << "Discount : "
+             << calculateDiscount()
+             << "%"
+             << endl;
+    }
+};
+
+
+// Food Item Class
+class FoodItem : public ShoppingItem
+{
+private:
+
+    string expiryDate;
+
+public:
+
+    FoodItem(string date)
+    {
+        expiryDate = date;
+    }
+
+    // 10% discount
+    double calculateDiscount() override
+    {
+        return 10.0;
+    }
+
+    void display() override
+    {
+        cout << "\nFood Item"
+             << endl;
+
+        cout << "Expiry Date : "
+             << expiryDate
+             << endl;
+
+        cout << "Discount    : "
+             << calculateDiscount()
+             << "%"
+             << endl;
+    }
+};
+
+int main()
+{
+    // Vector of abstract class pointers
+    vector<ShoppingItem*> items;
+
+    items.push_back(
+        new Electronics(
+            "Samsung",
+            2
+        )
+    );
+
+    items.push_back(
+        new Clothing(
+            "L",
+            "Cotton"
+        )
+    );
+
+    items.push_back(
+        new FoodItem(
+            "15-12-2026"
+        )
+    );
+
+    // Polymorphic display
+    for(ShoppingItem* item : items)
+    {
+        item->display();
+    }
+
+    // Free memory
+    for(ShoppingItem* item : items)
+    {
+        delete item;
+    }
+
+    return 0;
+}
+
