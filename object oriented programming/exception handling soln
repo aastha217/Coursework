@@ -1,0 +1,216 @@
+// Program to read 20 numbers between 10 and 100
+// Store only unique values in the array
+// Display all unique values entered by the user
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    // Smallest possible array
+    // Worst case: all 20 numbers are unique
+    int uniqueNumbers[20];
+
+    int count = 0;
+
+    cout << "Enter 20 numbers between 10 and 100:\n";
+
+    for(int i = 0; i < 20; i++)
+    {
+        int number;
+
+        cout << "Enter number "
+             << i + 1
+             << ": ";
+
+        cin >> number;
+
+        // Validate range
+        while(number < 10 || number > 100)
+        {
+            cout << "Invalid Input." << endl;
+            cout << "Enter a number between 10 and 100: ";
+
+            cin >> number;
+        }
+
+        bool duplicate = false;
+
+        // Check if number already exists
+        for(int j = 0; j < count; j++)
+        {
+            if(uniqueNumbers[j] == number)
+            {
+                duplicate = true;
+                break;
+            }
+        }
+
+        // Store only unique values
+        if(!duplicate)
+        {
+            uniqueNumbers[count] = number;
+            count++;
+        }
+    }
+
+    cout << "\nUnique Values Entered:\n";
+
+    for(int i = 0; i < count; i++)
+    {
+        cout << uniqueNumbers[i]
+             << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+
+
+// Program to simulate a lottery system
+// Demonstrates:
+// 1. Exception Handling
+// 2. Random Number Generation
+// 3. Input Validation
+// 4. fail(), clear(), ignore()
+// 5. rand() and srand()
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <ctime>
+#include <limits>
+
+using namespace std;
+
+int main()
+{
+    try
+    {
+        int count;
+
+        cout << "Enter number of lottery numbers to draw (1-10): ";
+
+        cin >> count;
+
+        // Handle non-integer input
+        if(cin.fail())
+        {
+            throw "Please enter a valid integer.";
+        }
+
+        // Validate range
+        if(count < 1 || count > 10)
+        {
+            throw "Count must be between 1 and 10.";
+        }
+
+        vector<int> ticketNumbers;
+
+        int ticketCount;
+
+        cout << "Enter number of ticket numbers (1-10): ";
+
+        cin >> ticketCount;
+
+        if(cin.fail())
+        {
+            throw "Please enter a valid integer.";
+        }
+
+        if(ticketCount < 1)
+        {
+            throw "No ticket numbers entered.";
+        }
+
+        if(ticketCount > 10)
+        {
+            throw "Ticket numbers cannot exceed 10.";
+        }
+
+        cout << "\nEnter ticket numbers (1-50):\n";
+
+        for(int i = 0; i < ticketCount; i++)
+        {
+            int number;
+
+            cin >> number;
+
+            if(cin.fail())
+            {
+                throw "Invalid ticket number input.";
+            }
+
+            if(number < 1 || number > 50)
+            {
+                throw "Ticket numbers must be between 1 and 50.";
+            }
+
+            ticketNumbers.push_back(number);
+        }
+
+        // Seed random number generator
+        srand(time(0));
+
+        set<int> lotteryNumbers;
+
+        // Generate unique lottery numbers
+        while(lotteryNumbers.size() < count)
+        {
+            lotteryNumbers.insert(
+                rand() % 50 + 1
+            );
+        }
+
+        cout << "\nGenerated Lottery Numbers:\n";
+
+        for(int num : lotteryNumbers)
+        {
+            cout << num << " ";
+        }
+
+        cout << endl;
+
+        bool matchFound = false;
+
+        cout << "\nMatching Numbers:\n";
+
+        for(int ticket : ticketNumbers)
+        {
+            if(lotteryNumbers.count(ticket))
+            {
+                cout << ticket << " ";
+                matchFound = true;
+            }
+        }
+
+        if(!matchFound)
+        {
+            cout << "No matching numbers found.";
+        }
+
+        cout << endl;
+    }
+
+    catch(const char* error)
+    {
+        cout << "\nException: "
+             << error
+             << endl;
+    }
+
+    // Handle input stream errors
+    if(cin.fail())
+    {
+        cin.clear();
+
+        cin.ignore(
+            numeric_limits<streamsize>::max(),
+            '\n'
+        );
+    }
+
+    return 0;
+}
