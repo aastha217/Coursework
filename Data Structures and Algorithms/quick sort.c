@@ -35,7 +35,6 @@ void quickSort(int arr[], int low, int high)
     if(low < high)
     {
         int pi = partition(arr, low, high);
-
         // Sort left subarray
         quickSort(arr, low, pi - 1);
 
