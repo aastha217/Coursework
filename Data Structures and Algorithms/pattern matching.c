@@ -29,6 +29,7 @@ int main()
         if(j == m)
             printf("Pattern found at index %d\n", i);
     }
+    
 
     return 0;
 }
